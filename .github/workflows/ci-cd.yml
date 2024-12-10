@@ -7,12 +7,11 @@ on:
     paths:
       - 'apps/next-app/**' # Trigger for Next.js app changes
       - 'apps/nest-app/**' # Trigger for Nest.js app changes
-      - 'package/**'       # Trigger for updates in the package folder
-      - '!*apps/**'        # Trigger for any other file outside `apps/`
+      - '.github/workflows/**' # Trigger for workflow updates
 
 jobs:
   build-and-push-next:
-    if: ${{ contains(github.event.head_commit.message, 'apps/next-app/') || contains(github.event.head_commit.message, 'package/') || !contains(github.event.head_commit.message, 'apps/') }}
+    if: ${{ contains(github.event.head_commit.message, 'apps/next-app/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -33,7 +32,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/next-app:latest
 
   build-and-push-nest:
-    if: ${{ contains(github.event.head_commit.message, 'apps/nest-app/') || contains(github.event.head_commit.message, 'package/') || !contains(github.event.head_commit.message, 'apps/') }}
+    if: ${{ contains(github.event.head_commit.message, 'apps/nest-app/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -52,5 +51,3 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/nest-app:latest -f apps/nest-app/Dockerfile .
           docker push ${{ secrets.DOCKER_USERNAME }}/nest-app:latest
-
-
